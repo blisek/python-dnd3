@@ -131,3 +131,10 @@ def parse_effects(element):
         eff = EFFECTS_GENERATORS[e.tag](name, text)
         setters.append(eff)
     return setters
+
+
+def parse_triggers(element):
+    triggers = []
+    for t in element:
+        pass
+    return triggers
