@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<feets>
+	<feet system_name="">
+		<name></name>
+		<desc></desc>
+		<triggers>
+			<trigger></trigger>
+		</triggers>
+		<conditions>
+			<min name=""></min>
+			<max name=""></max>
+			<eq name=""></eq>
+		</conditions>
+		<effects>
+			<add name="strength">2</add>
+			<set name="init">4</set>
+		</effects>
+	</feet>
+</feets>
