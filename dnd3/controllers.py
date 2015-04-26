@@ -1,5 +1,6 @@
 __author__ = 'bartek'
 
+P_FEATS_ON = 'feats_on'
 
 def ability_mod_calc(val):
     """ Wylicza modyfikator dla danego atrybutu.
@@ -27,6 +28,9 @@ class CreatureController:
         self.int_mod = None
         self.wis_mod = None
         self.cha_mod = None
+
+        # słownik atutów, które zostały aktywowane na tym modelu
+        self.feats_on = dict()
 
     def strength_mod(self, reload=False):
         """ Zwraca modyfikator z siły
@@ -66,6 +70,6 @@ class CreatureController:
             self.cha_mod = ability_mod_calc(self.model.charisma)
         return self.cha_mod
 
-    def feats_on(self):
+    def get_feats_on(self):
         for feat in self.model.feats:
             pass

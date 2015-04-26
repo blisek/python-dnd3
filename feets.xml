@@ -10,6 +10,7 @@
 			<min name=""></min>
 			<max name=""></max>
 			<eq name=""></eq>
+            <min_skill name="">1</min_skill>
 		</conditions>
 		<effects>
 			<add name="strength">2</add>

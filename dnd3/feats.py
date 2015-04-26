@@ -2,11 +2,14 @@ __author__ = 'bartek'
 
 
 class Feat:
+    def __init__(self, system_name):
+        self.sys_name = system_name
+
     def system_name(self):
         """ Zwraca nazwę systemową atutu
         :return: systemowa nazwa atutu
         """
-        raise NotImplementedError()
+        return self.sys_name
 
     def is_available_for(self, controller):
         """ Sprawdza czy postać spełnia wymagania atutu
@@ -58,11 +61,30 @@ class FeatDescription:
 
 # Definicje atutów
 class ExternFeat(Feat):
-    def __init__(self, conditions, effects, triggers, description):
+    def __init__(self, system_name, conditions, effects, triggers, description):
+        super().__init__(system_name)
         self.conditions = conditions
         self.effects = effects
         self.triggers = triggers
         self.description = description
 
     def is_available_for(self, controller):
-        pass
+        return all(map(lambda x: x(controller), self.conditions))
+
+    def turn_on(self, controller, *args, **kwargs):
+        effects_prod = []
+        for e in self.effects:
+            tmp = e(controller)
+            effects_prod.append(tmp)
+            tmp.set()
+        controller.feats_on[self.sys_name] = effects_prod
+
+    def turn_off(self, controller, *args, **kwargs):
+        if self.sys_name not in controller.feats_on:
+            return None
+        for e in controller.feats_on[self.sys_name]:
+            e.unset()
+        controller.feats_on[self.sys_name] = ()
+
+    def feat_description(self):
+        return self.description

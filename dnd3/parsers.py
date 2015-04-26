@@ -3,10 +3,16 @@ import xml.etree.ElementTree as etree
 
 
 TAG_NAME = 'name'
+INDEX_FUNCTION = 1
+INDEX_PROVIDER = 0
 
 
-def generator_provider(attr, lambdaf):
-    return lambda c: lambdaf(getattr(c, attr))
+def generator_provider(attr, lambda_cond):
+    return lambda c: lambda_cond(getattr(c, attr))
+
+
+def generator_provider_skill(skill_name, lambda_cond):
+    return lambda c: lambda_cond(c.skills[skill_name] if skill_name in c.skills else 0)
 
 
 def generator_min(min_val):
@@ -53,11 +59,18 @@ class AttributeSetter(Setter):
         self.__setunset()
 
     def __setunset(self):
-        tmp = getattr(self.controller, self.attr_name)
-        setattr(self.controller, self.attr_name, self.value)
-        self.value = tmp
-        self.is_on = not self.is_on
-
+        try:
+            tmp = getattr(self.controller, self.attr_name)
+            setattr(self.controller, self.attr_name, self.value)
+            self.value = tmp
+            self.is_on = not self.is_on
+        except AttributeError:
+            pass
+        else:
+            tmp = getattr(self.controller.model, self.attr_name)
+            setattr(self.controller.model, self.attr_name, self.value)
+            self.value = tmp
+            self.is_on = not self.is_on
 
 class AddSetter(Setter):
     def __init__(self, controller, attr_name, value):
@@ -68,16 +81,30 @@ class AddSetter(Setter):
     def set(self):
         if self.is_on:
             return None
-        tmp = getattr(self.controller, self.attr_name, 0)
-        setattr(self.controller, self.attr_name, tmp + self.value)
-        self.is_on = True
+        try:
+            tmp = getattr(self.controller, self.attr_name, 0)
+            setattr(self.controller, self.attr_name, tmp + self.value)
+            self.is_on = True
+        except AttributeError:
+            pass
+        else:
+            tmp = getattr(self.controller.model, self.attr_name, 0)
+            setattr(self.controller.model, self.attr_name, tmp + self.value)
+            self.is_on = True
 
     def unset(self):
         if not self.is_on:
             return None
-        tmp = getattr(self.controller, self.attr_name, 0)
-        setattr(self.controller, self.attr_name, tmp - self.value)
-        self.is_on = False
+        try:
+            tmp = getattr(self.controller, self.attr_name, 0)
+            setattr(self.controller, self.attr_name, tmp - self.value)
+            self.is_on = False
+        except AttributeError:
+            pass
+        else:
+            tmp = getattr(self.controller.model, self.attr_name, 0)
+            setattr(self.controller.model, self.attr_name, tmp - self.value)
+            self.is_on = False
 
 
 def generator_set(attr_name, value):
@@ -94,9 +121,10 @@ def generator_add(attr_name, value):
 
 
 CONDITIONS_GENERATORS = {
-    'min': generator_min,
-    'max': generator_max,
-    'eq': generator_eq
+    'min': (generator_provider, generator_min),
+    'max': (generator_provider, generator_max),
+    'eq': (generator_provider, generator_eq),
+    'min_skill': (generator_provider_skill, generator_min)
 }
 
 
@@ -109,11 +137,12 @@ EFFECTS_GENERATORS = {
 def parse_conditions(element):
     cond = []
     for c in element:
-        if c.tag not in CONDITIONS_GENERATORS:
+        tag = c.tag
+        if tag not in CONDITIONS_GENERATORS:
             continue
         name = c.attrib[TAG_NAME]
-        val = CONDITIONS_GENERATORS[c.tag](int(c.text))
-        cond.append(generator_provider(name, val))
+        lambda_func = CONDITIONS_GENERATORS[tag][INDEX_FUNCTION](int(c.text))
+        cond.append(CONDITIONS_GENERATORS[tag][INDEX_PROVIDER](name, lambda_func))
     return cond
 
 
