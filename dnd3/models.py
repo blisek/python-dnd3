@@ -5,12 +5,12 @@ P_AGE = 'age'
 P_CLASSES = 'classes'
 P_FEATS = 'feats'
 P_SKILLS = 'skills'
-P_STR = 'STR'
-P_DEX = 'DEX'
-P_CON = 'CON'
-P_INT = 'INT'
-P_WIS = 'WIS'
-P_CHA = 'CHA'
+P_STR = 'strength'
+P_DEX = 'dexterity'
+P_CON = 'constitution'
+P_INT = 'intelligence'
+P_WIS = 'wisdom'
+P_CHA = 'charisma'
 
 
 class Creature:

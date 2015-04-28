@@ -1,20 +1,17 @@
 <?xml version='1.0' encoding='utf-8'?>
-<feets>
-	<feet system_name="">
-		<name></name>
-		<desc></desc>
+<feats>
+	<feat system_name="krzepkosc">
+		<name>Krzepkość</name>
+		<desc>Dodaje +2 do Budowy</desc>
+		<reqs></reqs>
 		<triggers>
 			<trigger></trigger>
 		</triggers>
 		<conditions>
-			<min name=""></min>
-			<max name=""></max>
-			<eq name=""></eq>
-            <min_skill name="">1</min_skill>
+			<min name="constitution">10</min>
 		</conditions>
 		<effects>
-			<add name="strength">2</add>
-			<set name="init">4</set>
+			<add name="constitution">2</add>
 		</effects>
-	</feet>
-</feets>
+	</feat>
+</feats>
