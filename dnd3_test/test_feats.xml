@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feats>
+    <feat system_name="pierwszy">
+        <name>Atut pierwszy</name>
+        <desc>To jest atut pierwszy. Dodaje +2 do Budowy, -2 do Zr i ustawia Charyzmę na 18.</desc>
+        <reqs>Wymagania S 12, Blefowanie 5</reqs>
+        <conditions>
+            <min name="strength">12</min>
+            <min_skill name="blefowanie">5</min_skill>
+        </conditions>
+        <effects>
+            <add name="constitution">2</add>
+            <add name="dexterity">-2</add>
+            <set name="charisma">18</set>
+        </effects>
+    </feat>
+    <feat system_name="drugi">
+        <name>Atut drugi</name>
+        <effects>
+            <set name="charisma">1</set>
+        </effects>
+    </feat>
+</feats>

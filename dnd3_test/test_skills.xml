@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skills>
+    <skill system_name="skill_1">
+        <name>Skill #1</name>
+        <key_ability>intelligence</key_ability>
+    </skill>
+    <skill system_name="skill_2">
+        <name>Skill #2</name>
+        <desc>Skill #2 description</desc>
+        <key_ability>wisdom</key_ability>
+        <synergies>
+            <synergy name="skill_1" min_rank="5" test_bonus="2" />
+        </synergies>
+    </skill>
+</skills>

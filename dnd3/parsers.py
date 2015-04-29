@@ -2,6 +2,7 @@ __author__ = 'bartek'
 import functools
 import xml.etree.ElementTree as etree
 from dnd3.feats import ExternFeat, FeatDescription
+from dnd3 import controllers, skills
 
 
 TAG_NAME = 'name'
@@ -10,12 +11,16 @@ INDEX_PROVIDER = 0
 
 
 def generator_provider(attr, func, controller):
-    val = getattr(controller, attr)
+    val = None
+    if hasattr(controller, attr):
+        val = getattr(controller, attr)
+    else:
+        val = getattr(controller.model, attr)
     return func(val)
 
 
 def generator_provider_skill(skill_name, func, controller):
-    val = controller.skills[skill_name] if skill_name in controller.skills else 0
+    val = controller.model.skills[skill_name] if skill_name in controller.model.skills else 0
     return func(val)
 
 
@@ -54,22 +59,20 @@ class AttributeSetter(Setter):
 
     def set(self):
         if self.is_on:
-            return None
+            return
         self.__setunset()
 
     def unset(self):
         if not self.is_on:
-            return None
+            return
         self.__setunset()
 
     def __setunset(self):
-        try:
+        if hasattr(self.controller, self.attr_name):
             tmp = getattr(self.controller, self.attr_name)
             setattr(self.controller, self.attr_name, self.value)
             self.value = tmp
             self.is_on = not self.is_on
-        except AttributeError:
-            pass
         else:
             tmp = getattr(self.controller.model, self.attr_name)
             setattr(self.controller.model, self.attr_name, self.value)
@@ -171,7 +174,7 @@ def parse_effects(element):
 
 def parse_triggers(element):
     triggers = []
-    for t in element:
+    for _ in element:
         pass
     return triggers
 
@@ -179,7 +182,7 @@ def parse_triggers(element):
 def parse_feats(file_like):
     tree = etree.parse(file_like)
     root_element = tree.getroot()
-    feats = []
+    feats = dict()
     if root_element.tag.lower() != 'feats':
         return feats
     for element in root_element:
@@ -192,24 +195,18 @@ def parse_feats(file_like):
                 nn = n.tag.lower()
                 if nn == 'name':
                     name = n.text
-                    print(name)
                 elif nn == 'desc':
                     desc = n.text
-                    print(desc)
                 elif nn == 'reqs':
                     reqs = n.text
-                    print(reqs)
                 elif nn == 'conditions':
                     conds = parse_conditions(n)
-                    print(conds)
                 elif nn == 'effects':
                     effects = parse_effects(n)
-                    print(effects)
                 elif nn == 'triggers':
                     triggers = parse_triggers(n)
-                    print(triggers)
             feat_desc = FeatDescription(name, desc, reqs)
-            feats.append(ExternFeat(sys_name, conds, effects, triggers, feat_desc))
+            feats[sys_name] = ExternFeat(sys_name, conds, effects, triggers, feat_desc)
         except:
             pass
     return feats
@@ -218,7 +215,7 @@ def parse_feats(file_like):
 def parse_skills(file_like):
     tree = etree.parse(file_like)
     root = tree.getroot()
-    skills = []
+    skill_dict = dict()
     if root.tag.lower() != 'skills':
         return skills
     for se in root:
@@ -226,18 +223,17 @@ def parse_skills(file_like):
             if se.tag.lower() != 'skill':
                 continue
             sys_name = se.attrib['system_name']
-            name, desc, key_ab, sngs = None, None, None, []
             s_params = dict()
+            name, desc, synergies = None, None, []
             for n in se:
                 nn = n.tag.lower()
                 if nn == skills.SP_NAME:
-                    s_params[skills.SP_NAME] = n.text
+                    name = n.text
                 elif nn == skills.SP_DESCRIPTION:
-                    s_params[skills.SP_DESCRIPTION] = n.text
+                    desc = n.text
                 elif nn == skills.SP_KEY_ABILITY:
                     s_params[skills.SP_KEY_ABILITY] = getattr(controllers.CreatureController, n.text + '_mod')
                 elif nn == skills.SP_SYNERGIES:
-                    synergies = []
                     for s in n:
                         if s.tag.lower() != skills.SP_SYNERGY:
                             continue
@@ -245,8 +241,15 @@ def parse_skills(file_like):
                         d[skills.SP_MIN_RANK] = int(d[skills.SP_MIN_RANK])
                         d[skills.SP_TEST_BONUS] = int(d[skills.SP_TEST_BONUS])
                         synergies.append(skills.Synergy(**d))
-                    s_params[skills.SP_SYNERGIES] = tuple(synergies)
-            skills.append(skills.Skill(**s_params))
+            s_params[skills.SP_SYSTEM_NAME] = sys_name
+            s_params[skills.SP_NAME] = name
+            s_params[skills.SP_DESCRIPTION] = desc
+            s_params[skills.SP_SYNERGIES] = tuple(synergies)
+            skill_dict[sys_name] = skills.Skill(**s_params)
         except:
             pass
-    return skills
+    return skill_dict
+
+
+def parse_classes(file_like):
+    pass
