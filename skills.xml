@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skills>
+	<skill system_name="">
+		<name></name>
+		<desc></desc>
+		<key_ability></key_ability>
+		<synergies>
+			<synergy name="" min_ranks="" test_bonus="" />
+		</synergies>
+	</skill>
+</skills>

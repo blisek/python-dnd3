@@ -213,3 +213,40 @@ def parse_feats(file_like):
         except:
             pass
     return feats
+
+
+def parse_skills(file_like):
+    tree = etree.parse(file_like)
+    root = tree.getroot()
+    skills = []
+    if root.tag.lower() != 'skills':
+        return skills
+    for se in root:
+        try:
+            if se.tag.lower() != 'skill':
+                continue
+            sys_name = se.attrib['system_name']
+            name, desc, key_ab, sngs = None, None, None, []
+            s_params = dict()
+            for n in se:
+                nn = n.tag.lower()
+                if nn == skills.SP_NAME:
+                    s_params[skills.SP_NAME] = n.text
+                elif nn == skills.SP_DESCRIPTION:
+                    s_params[skills.SP_DESCRIPTION] = n.text
+                elif nn == skills.SP_KEY_ABILITY:
+                    s_params[skills.SP_KEY_ABILITY] = getattr(controllers.CreatureController, n.text + '_mod')
+                elif nn == skills.SP_SYNERGIES:
+                    synergies = []
+                    for s in n:
+                        if s.tag.lower() != skills.SP_SYNERGY:
+                            continue
+                        d = dict(s.attrib)
+                        d[skills.SP_MIN_RANK] = int(d[skills.SP_MIN_RANK])
+                        d[skills.SP_TEST_BONUS] = int(d[skills.SP_TEST_BONUS])
+                        synergies.append(skills.Synergy(**d))
+                    s_params[skills.SP_SYNERGIES] = tuple(synergies)
+            skills.append(skills.Skill(**s_params))
+        except:
+            pass
+    return skills
