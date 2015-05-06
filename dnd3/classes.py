@@ -1,6 +1,7 @@
 __author__ = 'bartek'
 import collections
-from dnd3 import flags
+from dnd3 import flags, models
+import math
 
 
 class Class:
@@ -62,6 +63,21 @@ class Class:
     def available_for_alignment(self, a):
         return bool(self.alignments & a)
 
+    def fortitude_modifier(self, level):
+        raise NotImplementedError()
+
+    def reflex_modifier(self, level):
+        raise NotImplementedError()
+
+    def will_modifier(self, level):
+        raise NotImplementedError()
+
+    def base_attack_modifier(self, level):
+        raise NotImplementedError()
+
+    def num_of_attacks(self, level):
+        raise NotImplementedError()
+
 
 ClassDescription = collections.namedtuple('ClassDescription', ['name', 'description', 'reqs', 'alignments', 'others'])
 
@@ -92,5 +108,42 @@ class Barbarian(Class):
     def class_description(self):
         return Barbarian.DESC
 
+    def fortitude_modifier(self, level):
+        return 2 + level // 2
+
+    def reflex_modifier(self, level):
+        return level // 3
+
+    def will_modifier(self, level):
+        return level // 3
+
+    def base_attack_modifier(self, level):
+        return level
+
+    def num_of_attacks(self, level):
+        return math.ceil(level / 5)
+
     def assign(self, model, class_data_provider):
+        """ Przypisuje klasę do modelu postaci oraz ustawia poziom w tej klasie na 1
+        :type model: dnd3.models.CreatureModel
+        :type class_data_provider: dnd3.providers.ClassDataProvider
+        :param model: model postaci
+        :param class_data_provider: klasa używana do komunikacji
+        :return:
+        """
+        # dodanie 1 poziomu
+        model[models.P_CLASSES].append((self.system_name(), 1))
+
+        fortitude_name = "{0}_{1}".format(models.P_FORTITUDE, self.sys_name)
+        model[fortitude_name] = self.fortitude_modifier(1)
+
+        reflex_name = "{0}_{1}".format(models.P_REFLEX, self.sys_name)
+        model[reflex_name] = self.reflex_modifier(1)
+
+        will_name = "{0}_{1}".format(models.P_WILL, self.sys_name)
+        model[will_name] = self.will_modifier(1)
+
+        base_attack_name = "{0}_{1}".format(models.P_BASE_ATTACK, self.sys_name)
+        model[base_attack_name] = self.base_attack_modifier(1)
+
         pass

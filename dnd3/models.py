@@ -16,6 +16,7 @@ P_SPECIAL_ABILITIES = 'special_abilities'
 P_FORTITUDE = 'fortitude'
 P_REFLEX = 'reflex'
 P_WILL = 'will'
+P_BASE_ATTACK = 'base_attack'
 
 
 class Creature:
@@ -77,7 +78,7 @@ class CreatureModel(dict):
         self.__setitem__(P_SKILLS, kwargs[P_SKILLS] if P_SKILLS in kwargs else dict())
 
         # specjalne zdolności
-        self.__setitem__(P_SPECIAL_ABILITIES, kwargs[P_SPECIAL_ABILITIES] if P_SPECIAL_ABILITIES in kwargs else set())
+        self.__setitem__(P_SPECIAL_ABILITIES, kwargs[P_SPECIAL_ABILITIES] if P_SPECIAL_ABILITIES in kwargs else dict())
 
         # efekty różnych atutów, specjalnych zdolności
         self.__setitem__(P_EFFECTS, set(kwargs[P_EFFECTS]) if P_EFFECTS in kwargs else set())
