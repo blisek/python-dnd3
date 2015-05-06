@@ -224,7 +224,7 @@ def parse_skills(file_like):
                 continue
             sys_name = se.attrib['system_name']
             s_params = dict()
-            name, desc, synergies = None, None, []
+            name, desc, restricted, synergies = None, None, None, []
             for n in se:
                 nn = n.tag.lower()
                 if nn == skills.SP_NAME:
@@ -233,6 +233,8 @@ def parse_skills(file_like):
                     desc = n.text
                 elif nn == skills.SP_KEY_ABILITY:
                     s_params[skills.SP_KEY_ABILITY] = getattr(controllers.CreatureController, n.text + '_mod')
+                elif nn == skills.SP_RESTRICTED:
+                    restricted = bool(n.text)
                 elif nn == skills.SP_SYNERGIES:
                     for s in n:
                         if s.tag.lower() != skills.SP_SYNERGY:
@@ -244,6 +246,7 @@ def parse_skills(file_like):
             s_params[skills.SP_SYSTEM_NAME] = sys_name
             s_params[skills.SP_NAME] = name
             s_params[skills.SP_DESCRIPTION] = desc
+            s_params[skills.SP_RESTRICTED] = restricted
             s_params[skills.SP_SYNERGIES] = tuple(synergies)
             skill_dict[sys_name] = skills.Skill(**s_params)
         except:

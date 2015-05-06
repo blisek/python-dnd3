@@ -4,6 +4,7 @@
 		<name></name>
 		<desc></desc>
 		<key_ability></key_ability>
+        <restricted></restricted>
 		<synergies>
 			<synergy name="" min_ranks="" test_bonus="" />
 		</synergies>
