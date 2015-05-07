@@ -17,6 +17,7 @@ P_FORTITUDE = 'fortitude'
 P_REFLEX = 'reflex'
 P_WILL = 'will'
 P_BASE_ATTACK = 'base_attack'
+P_ARMOR_CLASS = 'ac'
 
 
 class Creature:
@@ -55,12 +56,15 @@ class CreatureModel(dict):
         self.__setitem__(P_AGE, kwargs[P_AGE] if P_AGE in kwargs else None)
 
         # atrybuty
-        self.__setitem__(P_STR, kwargs[P_STR] if P_STR in kwargs else None)
-        self.__setitem__(P_DEX, kwargs[P_DEX] if P_DEX in kwargs else None)
-        self.__setitem__(P_CON, kwargs[P_CON] if P_CON in kwargs else None)
-        self.__setitem__(P_INT, kwargs[P_INT] if P_INT in kwargs else None)
-        self.__setitem__(P_WIS, kwargs[P_WIS] if P_WIS in kwargs else None)
-        self.__setitem__(P_CHA, kwargs[P_CHA] if P_CHA in kwargs else None)
+        self.__setitem__(P_STR, kwargs[P_STR] if P_STR in kwargs else 0)
+        self.__setitem__(P_DEX, kwargs[P_DEX] if P_DEX in kwargs else 0)
+        self.__setitem__(P_CON, kwargs[P_CON] if P_CON in kwargs else 0)
+        self.__setitem__(P_INT, kwargs[P_INT] if P_INT in kwargs else 0)
+        self.__setitem__(P_WIS, kwargs[P_WIS] if P_WIS in kwargs else 0)
+        self.__setitem__(P_CHA, kwargs[P_CHA] if P_CHA in kwargs else 0)
+
+        # KP
+        self.__setitem__(P_ARMOR_CLASS, kwargs[P_ARMOR_CLASS] if P_ARMOR_CLASS in kwargs else 0)
 
         # rzuty obronne
         self.__setitem__(P_FORTITUDE, kwargs[P_FORTITUDE] if P_FORTITUDE in kwargs else 0)

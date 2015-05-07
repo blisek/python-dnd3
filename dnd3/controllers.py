@@ -94,3 +94,5 @@ class CreatureController:
         if self.will is None or reload:
             self.will = sum(map(lambda x: x[1], filter(lambda x: x[0].startswith(models.P_WILL), self.model.items())))
         return self.will
+
+    def ac_total(self, reload=False):
