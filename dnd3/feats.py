@@ -2,8 +2,9 @@ __author__ = 'bartek'
 
 
 class Feat:
-    def __init__(self, system_name):
+    def __init__(self, system_name, passive):
         self.sys_name = system_name
+        self.passive = passive
 
     def system_name(self):
         """ Zwraca nazwę systemową atutu
@@ -42,6 +43,15 @@ class Feat:
         """
         raise NotImplementedError()
 
+    def is_passive(self):
+        return self.passive
+
+    def activate(self, controller):
+        pass
+
+    def deactivate(self, controller):
+        pass
+
 
 class FeatDescription:
     def __init__(self, name, description, requirements):
@@ -62,7 +72,7 @@ class FeatDescription:
 # Definicje atutów
 class ExternFeat(Feat):
     def __init__(self, system_name, conditions, effects, triggers, description):
-        super().__init__(system_name)
+        super().__init__(system_name, False)
         self.conditions = conditions
         self.effects = effects
         self.triggers = triggers
