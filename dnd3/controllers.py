@@ -34,6 +34,7 @@ class CreatureController:
         self.fortitude = None
         self.reflex = None
         self.will = None
+        self.ac = None
 
         # słownik atutów, które zostały aktywowane na tym modelu
         self.feats_on = dict()
@@ -80,19 +81,24 @@ class CreatureController:
         for feat in self.model.feats:
             pass
 
+    def __sum_of_pairs_begins_with(self, dc, phrase):
+        return sum(map(lambda x: x[1], filter(lambda x: x[0].startswith(phrase), self.dc.items())))
+
     def st_fortitude(self, reload=False):
         if self.fortitude is None or reload:
-            self.fortitude = sum(map(lambda x: x[1], filter(lambda x: x[0].startswith(models.P_FORTITUDE), self.model.items())))
+            self.fortitude = self.__sum_of_pairs_begins_with(self.model, models.P_FORTITUDE)
         return self.fortitude
 
     def st_reflex(self, reload=False):
         if self.reflex is None or reload:
-            self.reflex = sum(map(lambda x: x[1], filter(lambda x: x[0].startswith(models.P_REFLEX), self.model.items())))
+            self.reflex = self.__sum_of_pairs_begins_with(self.model, models.P_REFLEX)
         return self.reflex
 
     def st_will(self, reload=False):
         if self.will is None or reload:
-            self.will = sum(map(lambda x: x[1], filter(lambda x: x[0].startswith(models.P_WILL), self.model.items())))
+            self.will = self.__sum_of_pairs_begins_with(self.model, models.P_WILL)
         return self.will
 
     def ac_total(self, reload=False):
+        if self.ac is None or reload:
+            self.ac = self.__sum_of_pairs_begins_with(self.model, models.P_ARMOR_CLASS)
