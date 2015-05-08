@@ -18,6 +18,7 @@ P_REFLEX = 'reflex'
 P_WILL = 'will'
 P_BASE_ATTACK = 'base_attack'
 P_ARMOR_CLASS = 'ac'
+P_HP = 'hp'
 
 
 class Creature:
@@ -64,6 +65,7 @@ class CreatureModel(dict):
         self.__setitem__(P_CHA, kwargs[P_CHA] if P_CHA in kwargs else 0)
 
         # KP
+        self.__setitem__(P_ARMOR_CLASS + '_base', 10)
         self.__setitem__(P_ARMOR_CLASS, kwargs[P_ARMOR_CLASS] if P_ARMOR_CLASS in kwargs else 0)
 
         # rzuty obronne

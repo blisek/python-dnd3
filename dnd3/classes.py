@@ -1,6 +1,6 @@
 __author__ = 'bartek'
 import collections
-from dnd3 import flags, models
+from dnd3 import flags, models, special_abilities
 import math
 
 
@@ -10,7 +10,7 @@ class Class:
         self.handle_epic = handle_epic
         self.alignments = alignments
 
-    def assign(self, model, class_data_provider):
+    def assign(self, controller, class_data_provider):
         """ Aktywuje klasę dla modelu.
         Oprócz tego model
         :type model: dnd3.models.Creature
@@ -19,7 +19,7 @@ class Class:
         """
         raise NotImplementedError()
 
-    def is_assigned(self, model):
+    def is_assigned(self, controller):
         """ Informuje czy klasa jest przypisana do modelu
         :param controller: kontroler postaci
         :return: 2-elem. krotka, w której 1. element to wartość True/False zależnie od tego
@@ -29,7 +29,7 @@ class Class:
         suma = sum(map(lambda x: x[1], filter(lambda x: x[0] == name, model.classes)))
         return suma > 0, suma
 
-    def increase_level(self, model, class_data_provider, lvl):
+    def increase_level(self, controller, class_data_provider, lvl):
         raise NotImplementedError()
 
     def is_handling_epic(self):
@@ -92,9 +92,19 @@ class Barbarian(Class):
 
     DESCRIPTION = ClassDescription()
 
+    SYSTEM_NAME = 'barbarian'
+
     def __init__(self):
-        super().__init__(system_name='barbarian', handle_epic=False,
+        super().__init__(system_name=Barbarian.SYSTEM_NAME, handle_epic=False,
                          alignments=flags.A_ALL_CHAOTIC | flags.A_ALL_NEUTRAL)
+        self.fortitude_name = "{0}_{1}".format(models.P_FORTITUDE, self.sys_name)
+        self.reflex_name = "{0}_{1}".format(models.P_REFLEX, self.sys_name)
+        self.will_name = "{0}_{1}".format(models.P_WILL, self.sys_name)
+        self.base_attack_name = "{0}_{1}".format(models.P_BASE_ATTACK, self.sys_name)
+        self.hp_barbarian = "{0}_{1}".format(models.P_HP, self.sys_name)
+
+    def system_name(self):
+        return Barbarian.SYSTEM_NAME
 
     def hit_dice(self):
         return 12
@@ -123,27 +133,22 @@ class Barbarian(Class):
     def num_of_attacks(self, level):
         return math.ceil(level / 5)
 
-    def assign(self, model, class_data_provider):
+    def assign(self, controller, class_data_provider):
         """ Przypisuje klasę do modelu postaci oraz ustawia poziom w tej klasie na 1
-        :type model: dnd3.models.CreatureModel
+        :type controller: dnd3.controllers.CreatureController
         :type class_data_provider: dnd3.providers.ClassDataProvider
         :param model: model postaci
         :param class_data_provider: klasa używana do komunikacji
         :return:
         """
         # dodanie 1 poziomu
+        model = controller.model
         model[models.P_CLASSES].append((self.system_name(), 1))
+        model[self.fortitude_name] = self.fortitude_modifier(1)
+        model[self.reflex_name] = self.reflex_modifier(1)
+        model[self.will_name] = self.will_modifier(1)
+        model[self.base_attack_name] = self.base_attack_modifier(1)
+        special_abilities.Rage().turn_on(controller)
 
-        fortitude_name = "{0}_{1}".format(models.P_FORTITUDE, self.sys_name)
-        model[fortitude_name] = self.fortitude_modifier(1)
-
-        reflex_name = "{0}_{1}".format(models.P_REFLEX, self.sys_name)
-        model[reflex_name] = self.reflex_modifier(1)
-
-        will_name = "{0}_{1}".format(models.P_WILL, self.sys_name)
-        model[will_name] = self.will_modifier(1)
-
-        base_attack_name = "{0}_{1}".format(models.P_BASE_ATTACK, self.sys_name)
-        model[base_attack_name] = self.base_attack_modifier(1)
-
-        pass
+        # pw
+        model[self.hp_barbarian] = class_data_provider.get_hit_points(self.hit_dice())

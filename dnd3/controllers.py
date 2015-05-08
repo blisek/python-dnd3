@@ -102,3 +102,16 @@ class CreatureController:
     def ac_total(self, reload=False):
         if self.ac is None or reload:
             self.ac = self.__sum_of_pairs_begins_with(self.model, models.P_ARMOR_CLASS)
+
+    def class_total_level(self, sys_name):
+        """ Zwraca liczbę poziomów w klasie
+        :param sys_name: nazwa systemowa klasy
+        :return: int poziom w danej klasie
+        """
+        return sum(map(lambda x: x[1], filter(lambda x: x[0] == sys_name, self.model[models.P_CLASSES])))
+
+    def total_level(self):
+        """ Zwraca całkowity poziom postaci
+        :return:
+        """
+        return sum(map(lambda x: x[1], self.model[models.P_CLASSES]))

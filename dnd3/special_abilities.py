@@ -1,5 +1,5 @@
 __author__ = 'bartek'
-from dnd3 import models, flags
+from dnd3 import models, flags, classes
 
 
 PARG_USE_PER_DAY = 'use_per_day'
@@ -38,6 +38,13 @@ class SpecialAbility:
     def description(self):
         raise NotImplementedError()
 
+    def get_uses(self, controller):
+        """ Zwraca liczbę użyć zdolności
+        :param controller:
+        :return: krotka (liczba użyć, jednostka czasu)
+        """
+        pass
+
 
 class SpecialAbilityDescription:
     def __init__(self, name, description):
@@ -55,7 +62,8 @@ class Rage(SpecialAbility):
 
     DESCRIPTION = SpecialAbilityDescription(
         'Szał',
-        'Czasowo zyskuje +4 do Siły, +4 do Budowy, +2 do RO na Wolę, -2 do KP'
+        'Czasowo zyskuje +4 do Siły, +4 do Budowy, +2 do RO na Wolę, -2 do KP.\n'
+        'Czas trwanie: 3 + mod. z Bd (po zwiększeniu przez szał)'
     )
 
     def __init__(self):
@@ -64,7 +72,7 @@ class Rage(SpecialAbility):
         self.ac_mod = "{0}_{1}".format(models.P_ARMOR_CLASS, self.sys_name)
 
     def turn_on(self, controller, *args, **kwargs):
-        controller.model[models.P_SPECIAL_ABILITIES][self.sys_name] = kwargs[PARG_USE_PER_DAY]
+        controller.model[models.P_SPECIAL_ABILITIES][self.sys_name] = True
 
     def turn_off(self, controller, *args, **kwargs):
         del controller.model[models.P_SPECIAL_ABILITIES][self.sys_name]
@@ -87,3 +95,30 @@ class Rage(SpecialAbility):
         controller.st_will(True)
         model[self.kp_mod] = -2
         controller.ac_total(True)
+        model[models.P_EFFECTS].add(self.sys_name)
+
+    def deactivate(self, controller):
+        model = controller.model
+        model[models.P_STR] -= 4
+        controller.strength_mod(True)
+        model[models.P_CON] -= 4
+        controller.constitution_mod(True)
+        del model[self.will_mod]
+        controller.st_will(True)
+        del model[self.kp_mod]
+        controller.ac_total(True)
+        model[models.P_EFFECTS].remove(self.sys_name)
+
+    def get_uses(self, controller):
+        return 1 + (controller.class_total_level(classes.Barbarian.SYSTEM_NAME) // 4)
+
+    def duration(self, controller):
+        """
+        :type controller: dnd3.controllers.CreatureController
+        :param controller:
+        :return:
+        """
+        if self.sys_name in controller.model[models.P_EFFECTS]:
+            return 3 + controller.constitution_mod()
+        else:
+            return 5 + controller.constitution_mod()

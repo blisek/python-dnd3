@@ -4,6 +4,7 @@ __author__ = 'bartek'
 class Context:
     def __init__(self):
         self.feats = []
+        self.skills = []
 
     def add_feats(self, iterator):
         self.feats.extend(iterator)
@@ -19,3 +20,6 @@ class Context:
         :return: iterator do listy z atutami
         """
         return filter(lambda l: l.is_available_for(controller), self.feats)
+
+    def get_skills(self):
+        return iter(self.skills)
