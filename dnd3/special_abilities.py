@@ -133,3 +133,29 @@ class Rage(SpecialAbility):
             return 3 + controller.constitution_mod()
         else:
             return 5 + controller.constitution_mod()
+
+
+# TODO: deaktywacja atutu gdy wkłada pancerz ciężki
+class FastMovement(SpecialAbility):
+
+    DESCRITPTION = SpecialAbilityDescription(
+        'szybkie poruszanie się',
+        'szybkość wzrasta o +3 metry jeśli jest bez pancerza, w pancerzu lekkim lub średnim'
+    )
+
+    def __init__(self):
+        super().__init__(sys_name='fast_movement', passive=True)
+
+    def get_flags(self) -> int:
+        return flags.F_ALLTIME
+
+    def description(self):
+        return FastMovement.DESCRITPTION
+
+    def turn_off(self, controller: controllers.CreatureController, *args, **kwargs) -> None:
+        d = controller.model[models.P_SPECIAL_ABILITIES]
+        if self.sys_name in d:
+            del d[self.sys_name]
+
+    def turn_on(self, controller: controllers.CreatureController, *args, **kwargs) -> None:
+        controller.model[models.P_SPECIAL_ABILITIES][self.sys_name] = True

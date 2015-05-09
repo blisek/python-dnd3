@@ -153,6 +153,4 @@ class Barbarian(Class):
         model[self.will_name] = self.will_modifier(1)
         model[self.base_attack_name] = self.base_attack_modifier(1)
         special_abilities.Rage().turn_on(controller)
-
-        # pw
-        model[self.hp_barbarian] = class_data_provider.get_hit_points(self.hit_dice())
+        special_abilities.FastMovement().turn_on(controller)
