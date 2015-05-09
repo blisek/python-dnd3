@@ -6,10 +6,16 @@ import dnd3.skills
 
 
 class ClassDataProvider:
-    def get_hit_points(self, walls):
+    def get_hit_points(self, walls: int) -> int:
         raise NotImplementedError()
 
-    def get_skills(self, skills, class_skills, points):
+    def get_skills(self, skills: list, class_skills: list, points: int) -> dict:
+        raise NotImplementedError()
+
+    def get_abilities(self, min_value: int=8) -> dict:
+        """ Zwraca słownik z wartościami atrybutów. W słowniku muszą znaleźć się wartości dla WSZYSTKICH atrybutów
+        :return: dict
+        """
         raise NotImplementedError()
 
 

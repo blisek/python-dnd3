@@ -78,7 +78,7 @@ class CreatureModel(dict):
         self.__setitem__(P_CLASSES, kwargs[P_CLASSES] if P_CLASSES in kwargs else list())
 
         #atuty
-        self.__setitem__(P_FEATS, kwargs[P_FEATS] if P_FEATS in kwargs else list())
+        self.__setitem__(P_FEATS, kwargs[P_FEATS] if P_FEATS in kwargs else set())
 
         # umiejętności
         self.__setitem__(P_SKILLS, kwargs[P_SKILLS] if P_SKILLS in kwargs else dict())

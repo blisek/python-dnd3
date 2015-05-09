@@ -1,34 +1,37 @@
 __author__ = 'bartek'
-from dnd3 import models, flags, classes
+from dnd3 import models, flags, classes, controllers
 
 
 PARG_USE_PER_DAY = 'use_per_day'
 
 
 class SpecialAbility:
-    def __init__(self, sys_name, passive):
+    def __init__(self, sys_name: str, passive: bool):
         self.sys_name = sys_name
         self.passive = passive
 
-    def system_name(self):
+    def system_name(self) -> str:
         return self.sys_name
 
-    def is_passive(self):
+    def is_passive(self) -> bool:
         return self.passive
 
-    def turn_on(self, controller, *args, **kwargs):
+    def is_activated(self, controller: controllers.CreatureController) -> bool:
+        return self.sys_name in controller.model[models.P_EFFECTS]
+
+    def turn_on(self, controller: controllers.CreatureController, *args, **kwargs) -> None:
         raise NotImplementedError()
 
-    def turn_off(self, controller, *args, **kwargs):
+    def turn_off(self, controller: controllers.CreatureController, *args, **kwargs) -> None:
         raise NotImplementedError()
 
-    def activate(self, controller):
+    def activate(self, controller: controllers.CreatureController) -> None:
         pass
 
-    def deactivate(self, controller):
+    def deactivate(self, controller: controllers.CreatureController) -> None:
         pass
 
-    def duration(self, controller):
+    def duration(self, controller: controllers.CreatureController) -> tuple:
         """ Zwraca czas trwania po aktywacji
         :param controller:
         :return: 2 elementowa krotka (czas trwania, jednostka czasu np. rundy)
@@ -38,23 +41,23 @@ class SpecialAbility:
     def description(self):
         raise NotImplementedError()
 
-    def get_uses(self, controller):
+    def get_uses(self, controller: controllers.CreatureController) -> tuple:
         """ Zwraca liczbę użyć zdolności
         :param controller:
         :return: krotka (liczba użyć, jednostka czasu)
         """
         pass
 
-    def get_flags(self):
+    def get_flags(self) -> int:
         return 0
 
 
 class SpecialAbilityDescription:
-    def __init__(self, name, description):
+    def __init__(self, name: str, description: str):
         self.name = name
         self.description = description
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.name
 
     def get_description(self):

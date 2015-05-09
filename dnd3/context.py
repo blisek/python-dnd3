@@ -1,4 +1,5 @@
 __author__ = 'bartek'
+from dnd3 import controllers
 
 
 class Context:
@@ -15,7 +16,7 @@ class Context:
         """
         return iter(self.feats)
 
-    def get_feats_available_for_creature(self, controller):
+    def get_feats_available_for_creature(self, controller: controllers.CreatureController):
         """ Zwraca iterator do listy atutów tego kontekstu, których wymagania spełnia kontroler, w nieokreślonym porządku
         :return: iterator do listy z atutami
         """

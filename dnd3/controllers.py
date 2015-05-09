@@ -16,7 +16,7 @@ def ability_mod_calc(val):
 
 
 class CreatureController:
-    def __init__(self, model):
+    def __init__(self, model: models.CreatureModel):
         """ Tworzy kontroler dla modelu Creature
         :type model: dnd3.models.CreatureModel
         :param model: model
@@ -39,7 +39,7 @@ class CreatureController:
         # słownik atutów, które zostały aktywowane na tym modelu
         self.feats_on = dict()
 
-    def strength_mod(self, reload=False):
+    def strength_mod(self, reload=False) -> int:
         """ Zwraca modyfikator z siły
         :param reload: jeśli True modyfikator zostanie ponownie wyliczony
         :return: modyfikator z siły
@@ -48,7 +48,7 @@ class CreatureController:
             self.s_mod = ability_mod_calc(self.model[models.P_STR])
         return self.s_mod
 
-    def dexterity_mod(self, reload=False):
+    def dexterity_mod(self, reload=False) -> int:
         """ Zwraca modyfikator ze zręczności
         :param reload: jeśli True modyfikator zostanie ponownie wyliczony
         :return: modyfikator ze zręczności
@@ -57,60 +57,60 @@ class CreatureController:
             self.dex_mod = ability_mod_calc(self.model[models.P_DEX])
         return self.dex_mod
 
-    def constitution_mod(self, reload=False):
+    def constitution_mod(self, reload=False) -> int:
         if self.con_mod is None or reload:
             self.con_mod = ability_mod_calc(self.model[models.P_CON])
         return self.con_mod
 
-    def intelligence_mod(self, reload=False):
+    def intelligence_mod(self, reload=False) -> int:
         if self.int_mod is None or reload:
             self.int_mod = ability_mod_calc(self.model[models.P_INT])
         return self.int_mod
 
-    def wisdom_mod(self, reload=False):
+    def wisdom_mod(self, reload=False) -> int:
         if self.wis_mod is None or reload:
             self.wis_mod = ability_mod_calc(self.model[models.P_WIS])
         return self.wis_mod
 
-    def charisma_mod(self, reload=False):
+    def charisma_mod(self, reload=False) -> int:
         if self.cha_mod is None or reload:
             self.cha_mod = ability_mod_calc(self.model[models.P_CHA])
         return self.cha_mod
 
-    def get_feats_on(self):
+    def get_feats_on(self) -> tuple:
         for feat in self.model.feats:
             pass
 
-    def __sum_of_pairs_begins_with(self, dc, phrase):
-        return sum(map(lambda x: x[1], filter(lambda x: x[0].startswith(phrase), self.dc.items())))
+    def __sum_of_pairs_begins_with(self, dc: dict, phrase: str) -> int:
+        return sum(map(lambda x: x[1], filter(lambda x: x[0].startswith(phrase), dc.items())))
 
-    def st_fortitude(self, reload=False):
+    def st_fortitude(self, reload=False) -> int:
         if self.fortitude is None or reload:
             self.fortitude = self.__sum_of_pairs_begins_with(self.model, models.P_FORTITUDE)
         return self.fortitude
 
-    def st_reflex(self, reload=False):
+    def st_reflex(self, reload=False) -> int:
         if self.reflex is None or reload:
             self.reflex = self.__sum_of_pairs_begins_with(self.model, models.P_REFLEX)
         return self.reflex
 
-    def st_will(self, reload=False):
+    def st_will(self, reload=False) -> int:
         if self.will is None or reload:
             self.will = self.__sum_of_pairs_begins_with(self.model, models.P_WILL)
         return self.will
 
-    def ac_total(self, reload=False):
+    def ac_total(self, reload=False) -> int:
         if self.ac is None or reload:
             self.ac = self.__sum_of_pairs_begins_with(self.model, models.P_ARMOR_CLASS)
 
-    def class_total_level(self, sys_name):
+    def class_total_level(self, sys_name: str) -> int:
         """ Zwraca liczbę poziomów w klasie
         :param sys_name: nazwa systemowa klasy
         :return: int poziom w danej klasie
         """
         return sum(map(lambda x: x[1], filter(lambda x: x[0] == sys_name, self.model[models.P_CLASSES])))
 
-    def total_level(self):
+    def total_level(self) -> int:
         """ Zwraca całkowity poziom postaci
         :return:
         """

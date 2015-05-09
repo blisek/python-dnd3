@@ -1,81 +1,85 @@
 __author__ = 'bartek'
 import collections
 from dnd3 import flags, models, special_abilities
+import dnd3.controllers
+import dnd3.providers
 import math
 
 
 class Class:
-    def __init__(self, system_name, handle_epic, alignments=flags.A_ALL_ALIGNMENTS):
+    def __init__(self, system_name: str, handle_epic: bool, alignments=flags.A_ALL_ALIGNMENTS):
         self.sys_name = system_name
         self.handle_epic = handle_epic
         self.alignments = alignments
 
-    def assign(self, controller, class_data_provider):
+    def assign(self, controller: dnd3.controllers.CreatureController,
+               class_data_provider: dnd3.providers.ClassDataProvider) -> None:
         """ Aktywuje klasę dla modelu.
         Oprócz tego model
         :type model: dnd3.models.Creature
         :param model:
-        :return:
+        :return: None
         """
         raise NotImplementedError()
 
-    def is_assigned(self, controller):
+    def is_assigned(self, controller: dnd3.controllers.CreatureController) -> bool:
         """ Informuje czy klasa jest przypisana do modelu
         :param controller: kontroler postaci
         :return: 2-elem. krotka, w której 1. element to wartość True/False zależnie od tego
         czy postać ma co najmniej jeden poziom w klasie oraz sumaryczny poziom w danej klasie
         """
         name = self.system_name()
-        suma = sum(map(lambda x: x[1], filter(lambda x: x[0] == name, model.classes)))
+        suma = sum(map(lambda x: x[1], filter(lambda x: x[0] == name, controller.model.classes)))
         return suma > 0, suma
 
-    def increase_level(self, controller, class_data_provider, lvl):
+    def increase_level(self, controller: dnd3.controllers.CreatureController,
+                       class_data_provider: dnd3.providers.ClassDataProvider, lvl: int) -> None:
         raise NotImplementedError()
 
-    def is_handling_epic(self):
+    def is_handling_epic(self) -> bool:
         return self.handle_epic
 
-    def system_name(self):
+    def system_name(self) -> str:
         return self.sys_name
 
     def class_description(self):
         raise NotImplementedError()
 
-    def class_skills(self):
+    def class_skills(self) -> list:
         """ Zwraca umiejętności klasowe
         :return: zbiór z systemowymi nazwami umiejętności
         """
         raise NotImplementedError()
 
-    def hit_dice(self):
+    def hit_dice(self) -> int:
         """ KW tej klasy.
         Metody increase_level, turn_on, turn_off nie modyfikują PW modelu.
         :return: zwraca kość wytrzymałości
         """
         raise NotImplementedError()
 
-    def skill_ranks_per_level(self):
+    def skill_ranks_per_level(self) -> int:
         """ Zwraca liczbę ramg co poziom
         :return: liczba rang co poziom
         """
         raise NotImplementedError()
 
-    def available_for_alignment(self, a):
+    def available_for_alignment(self, a: int) -> bool:
         return bool(self.alignments & a)
 
-    def fortitude_modifier(self, level):
+    def fortitude_modifier(self, level: int) -> int:
         raise NotImplementedError()
 
-    def reflex_modifier(self, level):
+    def reflex_modifier(self, level: int) -> int:
         raise NotImplementedError()
 
-    def will_modifier(self, level):
+    def will_modifier(self, level: int) -> int:
         raise NotImplementedError()
 
-    def base_attack_modifier(self, level):
+    def base_attack_modifier(self, level: int) -> int:
         raise NotImplementedError()
 
-    def num_of_attacks(self, level):
+    def num_of_attacks(self, level: int) -> int:
         raise NotImplementedError()
 
 

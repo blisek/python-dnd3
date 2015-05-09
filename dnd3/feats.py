@@ -1,29 +1,32 @@
 __author__ = 'bartek'
-from dnd3 import flags
+from dnd3 import flags, controllers, models
 
 
 class Feat:
-    def __init__(self, system_name, passive):
+    def __init__(self, system_name: str, passive: bool):
         self.sys_name = system_name
         self.passive = passive
 
-    def get_flags(self):
+    def get_flags(self) -> int:
         return 0
 
-    def system_name(self):
+    def system_name(self) -> str:
         """ Zwraca nazwę systemową atutu
         :return: systemowa nazwa atutu
         """
         return self.sys_name
 
-    def is_available_for(self, controller):
+    def is_available_for(self, controller: controllers.CreatureController) -> bool:
         """ Sprawdza czy postać spełnia wymagania atutu
         :param controller: kontroler postaci
         :return: True jeśli spełnia wymagania, inaczej False
         """
         raise NotImplementedError()
 
-    def turn_on(self, controller, *args, **kwargs):
+    def is_turned_on(self, controller: controllers.CreatureController) -> bool:
+        return self.sys_name in controller.model[models.P_FEATS]
+
+    def turn_on(self, controller: controllers.CreatureController, *args, **kwargs) -> bool:
         """ Aktywuje atut dla danej postaci
         :param controller: kontroler postaci
         :param args: dodatkowe argumenty
@@ -32,7 +35,7 @@ class Feat:
         """
         raise NotImplementedError()
 
-    def turn_off(self, controller, *args, **kwargs):
+    def turn_off(self, controller: controllers.CreatureController, *args, **kwargs) -> bool:
         """ Dezaktywuje atut
         :param controller: kontroler postaci
         :param args: dodatkowe argumenty
@@ -47,42 +50,42 @@ class Feat:
         """
         raise NotImplementedError()
 
-    def is_passive(self):
+    def is_passive(self) -> bool:
         return self.passive
 
-    def activate(self, controller):
+    def activate(self, controller: controllers.CreatureController) -> None:
         pass
 
-    def deactivate(self, controller):
+    def deactivate(self, controller: controllers.CreatureController) -> None:
         pass
 
 
 class FeatDescription:
-    def __init__(self, name, description, requirements):
-        self.__name = name
-        self.__description = description
-        self.__requirements = requirements
+    def __init__(self, name: str, description: str, requirements: str):
+        self._name = name
+        self._description = description
+        self._requirements = requirements
 
-    def name(self):
-        return self.__name
+    def name(self) -> str:
+        return self._name
 
-    def description(self):
-        return self.__description
+    def description(self) -> str:
+        return self._description
 
-    def requirements(self):
-        return self.__requirements
+    def requirements(self) -> str:
+        return self._requirements
 
 
 # Definicje atutów
 class ExternFeat(Feat):
-    def __init__(self, system_name, conditions, effects, triggers, description):
+    def __init__(self, system_name: str, conditions: list, effects: list, triggers: list, description: FeatDescription):
         super().__init__(system_name, False)
         self.conditions = conditions
         self.effects = effects
         self.triggers = triggers
         self.description = description
 
-    def get_flags(self):
+    def get_flags(self) -> int:
         return flags.F_ALLTIME
 
     def is_available_for(self, controller):
