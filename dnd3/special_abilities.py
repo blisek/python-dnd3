@@ -45,6 +45,9 @@ class SpecialAbility:
         """
         pass
 
+    def get_flags(self):
+        return 0
+
 
 class SpecialAbilityDescription:
     def __init__(self, name, description):
@@ -66,10 +69,15 @@ class Rage(SpecialAbility):
         'Czas trwanie: 3 + mod. z Bd (po zwiększeniu przez szał)'
     )
 
+    FLAGS = flags.F_ALLTIME | flags.F_FIGHT | flags.F_LIMITED_DURATION
+
     def __init__(self):
         super().__init__('rage', False)
         self.will_mod = "{0}_{1}".format(models.P_WILL, self.sys_name)
         self.ac_mod = "{0}_{1}".format(models.P_ARMOR_CLASS, self.sys_name)
+
+    def get_flags(self):
+        return Rage.FLAGS
 
     def turn_on(self, controller, *args, **kwargs):
         controller.model[models.P_SPECIAL_ABILITIES][self.sys_name] = True

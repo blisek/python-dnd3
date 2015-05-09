@@ -1,10 +1,14 @@
 __author__ = 'bartek'
+from dnd3 import flags
 
 
 class Feat:
     def __init__(self, system_name, passive):
         self.sys_name = system_name
         self.passive = passive
+
+    def get_flags(self):
+        return 0
 
     def system_name(self):
         """ Zwraca nazwę systemową atutu
@@ -77,6 +81,9 @@ class ExternFeat(Feat):
         self.effects = effects
         self.triggers = triggers
         self.description = description
+
+    def get_flags(self):
+        return flags.F_ALLTIME
 
     def is_available_for(self, controller):
         return all(map(lambda x: x(controller), self.conditions))

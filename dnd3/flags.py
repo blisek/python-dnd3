@@ -1,5 +1,7 @@
 __author__ = 'bartek'
 
+
+# A - alignment
 A_LG = 'lawful_good'
 A_LN = 'lawful_neutral'
 A_LE = 'lawful_evil'
@@ -31,3 +33,8 @@ A_ALL_ALIGNMENTS = A_ALL_CHAOTIC | A_ALL_NEUTRAL | A_ALL_LAWFUL
 T_ROUND = 'round'
 T_TOUR = 'tour'
 T_HOUR = 'hour'
+
+# F - feats
+F_ALLTIME = 1
+F_FIGHT = 2
+F_LIMITED_DURATION = 32768
