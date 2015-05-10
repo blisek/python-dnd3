@@ -1,13 +1,15 @@
 __author__ = 'bartek'
 import collections
-from dnd3 import flags, models, special_abilities
+import dnd3.flags
+import dnd3.models
+import dnd3.special_abilities
 import dnd3.controllers
 import dnd3.providers
 import math
 
 
 class Class:
-    def __init__(self, system_name: str, handle_epic: bool, alignments=flags.A_ALL_ALIGNMENTS):
+    def __init__(self, system_name: str, handle_epic: bool, alignments=dnd3.flags.A_ALL_ALIGNMENTS):
         self.sys_name = system_name
         self.handle_epic = handle_epic
         self.alignments = alignments
@@ -94,18 +96,24 @@ class Barbarian(Class):
         'wspinaczka', 'wyczucie_kierunku', 'zastraszanie', 'znajomosc_dziczy'
     ))
 
-    DESCRIPTION = ClassDescription()
+    DESCRIPTION = ClassDescription(
+        'barbarzyńca',
+        '',
+        '',
+        'wszystkie niepraworządne',
+        ''
+    )
 
     SYSTEM_NAME = 'barbarian'
 
     def __init__(self):
         super().__init__(system_name=Barbarian.SYSTEM_NAME, handle_epic=False,
-                         alignments=flags.A_ALL_CHAOTIC | flags.A_ALL_NEUTRAL)
-        self.fortitude_name = "{0}_{1}".format(models.P_FORTITUDE, self.sys_name)
-        self.reflex_name = "{0}_{1}".format(models.P_REFLEX, self.sys_name)
-        self.will_name = "{0}_{1}".format(models.P_WILL, self.sys_name)
-        self.base_attack_name = "{0}_{1}".format(models.P_BASE_ATTACK, self.sys_name)
-        self.hp_barbarian = "{0}_{1}".format(models.P_HP, self.sys_name)
+                         alignments=dnd3.flags.A_ALL_CHAOTIC | dnd3.flags.A_ALL_NEUTRAL)
+        self.fortitude_name = "{0}_{1}".format(dnd3.models.P_FORTITUDE, self.sys_name)
+        self.reflex_name = "{0}_{1}".format(dnd3.models.P_REFLEX, self.sys_name)
+        self.will_name = "{0}_{1}".format(dnd3.models.P_WILL, self.sys_name)
+        self.base_attack_name = "{0}_{1}".format(dnd3.models.P_BASE_ATTACK, self.sys_name)
+        self.hp_barbarian = "{0}_{1}".format(dnd3.models.P_HP, self.sys_name)
 
     def system_name(self):
         return Barbarian.SYSTEM_NAME
@@ -120,7 +128,7 @@ class Barbarian(Class):
         return 4
 
     def class_description(self):
-        return Barbarian.DESC
+        return Barbarian.DESCRIPTION
 
     def fortitude_modifier(self, level):
         return 2 + level // 2
@@ -147,15 +155,15 @@ class Barbarian(Class):
         """
         # dodanie 1 poziomu
         model = controller.model
-        model[models.P_CLASSES].append((self.system_name(), 1))
+        model[dnd3.models.P_CLASSES].append((self.system_name(), 1))
         model[self.fortitude_name] = self.fortitude_modifier(1)
         model[self.reflex_name] = self.reflex_modifier(1)
         model[self.will_name] = self.will_modifier(1)
         model[self.base_attack_name] = self.base_attack_modifier(1)
-        new_speca = [special_abilities.Rage.SYSTEM_NAME, special_abilities.FastMovement.SYSTEM_NAME]
-        if flags.E_NEW_FEATS in extra_return_arguments:
-            extra_return_arguments[flags.E_NEW_SPECA].extend(new_speca)
+        new_speca = [dnd3.special_abilities.Rage.SYSTEM_NAME, dnd3.special_abilities.FastMovement.SYSTEM_NAME]
+        if dnd3.flags.E_NEW_FEATS in extra_return_arguments:
+            extra_return_arguments[dnd3.flags.E_NEW_SPECA].extend(new_speca)
         else:
-            extra_return_arguments[flags.E_NEW_SPECA] = new_speca
+            extra_return_arguments[dnd3.flags.E_NEW_SPECA] = new_speca
 
         # TODO: dodać biegłości

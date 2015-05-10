@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skills>
+	<skill system_name="test_skill">
+		<name>Test skill</name>
+		<desc></desc>
+		<key_ability>strength</key_ability>
+        <restricted>True</restricted>
+		<synergies>
+			<synergy name="test_2" min_rank="5" test_bonus="2"></synergy>
+		</synergies>
+	</skill>
+</skills>

@@ -43,3 +43,16 @@ class RandomClassDataProvider(ClassDataProvider):
             except IndexError:
                 pass
         return choosen_skills
+
+    def get_abilities(self, min_value: int=8):
+        l = list()
+        limit = 1000
+        for _ in range(6):
+            sm = 0
+            while sm < min_value and limit > 0:
+                sm = sum(sorted([random.randint(1, 6) for _ in range(4)], reverse=True)[:3])
+                limit -= 1
+            if not limit:
+                sm = min_value
+            l.append(sm)
+        return l

@@ -1,8 +1,9 @@
 __author__ = 'bartek'
 import functools
-import xml.etree.ElementTree as etree
-from dnd3.feats import ExternFeat, FeatDescription
-from dnd3 import controllers, skills
+import xml.etree.ElementTree
+import dnd3.feats
+import dnd3.controllers
+import dnd3.skills
 
 
 TAG_NAME = 'name'
@@ -180,7 +181,7 @@ def parse_triggers(element):
 
 
 def parse_feats(file_like):
-    tree = etree.parse(file_like)
+    tree = xml.etree.ElementTree.parse(file_like)
     root_element = tree.getroot()
     feats = dict()
     if root_element.tag.lower() != 'feats':
@@ -205,19 +206,19 @@ def parse_feats(file_like):
                     effects = parse_effects(n)
                 elif nn == 'triggers':
                     triggers = parse_triggers(n)
-            feat_desc = FeatDescription(name, desc, reqs)
-            feats[sys_name] = ExternFeat(sys_name, conds, effects, triggers, feat_desc)
+            feat_desc = dnd3.feats.FeatDescription(name, desc, reqs)
+            feats[sys_name] = dnd3.feats.ExternFeat(sys_name, conds, effects, triggers, feat_desc)
         except:
             pass
     return feats
 
 
 def parse_skills(file_like):
-    tree = etree.parse(file_like)
+    tree = xml.etree.ElementTree.parse(file_like)
     root = tree.getroot()
     skill_dict = dict()
     if root.tag.lower() != 'skills':
-        return skills
+        return skill_dict
     for se in root:
         try:
             if se.tag.lower() != 'skill':
@@ -227,30 +228,30 @@ def parse_skills(file_like):
             name, desc, restricted, synergies = None, None, None, []
             for n in se:
                 nn = n.tag.lower()
-                if nn == skills.SP_NAME:
+                if nn == dnd3.skills.SP_NAME.lower():
                     name = n.text
-                elif nn == skills.SP_DESCRIPTION:
+                elif nn == dnd3.skills.SP_DESCRIPTION.lower():
                     desc = n.text
-                elif nn == skills.SP_KEY_ABILITY:
-                    s_params[skills.SP_KEY_ABILITY] = getattr(controllers.CreatureController, n.text + '_mod')
-                elif nn == skills.SP_RESTRICTED:
+                elif nn == dnd3.skills.SP_KEY_ABILITY.lower():
+                    s_params[dnd3.skills.SP_KEY_ABILITY] = getattr(dnd3.controllers.CreatureController, n.text + '_mod')
+                elif nn == dnd3.skills.SP_RESTRICTED.lower():
                     restricted = bool(n.text)
-                elif nn == skills.SP_SYNERGIES:
+                elif nn == dnd3.skills.SP_SYNERGIES.lower():
                     for s in n:
-                        if s.tag.lower() != skills.SP_SYNERGY:
+                        if s.tag.lower() != dnd3.skills.SP_SYNERGY.lower():
                             continue
                         d = dict(s.attrib)
-                        d[skills.SP_MIN_RANK] = int(d[skills.SP_MIN_RANK])
-                        d[skills.SP_TEST_BONUS] = int(d[skills.SP_TEST_BONUS])
-                        synergies.append(skills.Synergy(**d))
-            s_params[skills.SP_SYSTEM_NAME] = sys_name
-            s_params[skills.SP_NAME] = name
-            s_params[skills.SP_DESCRIPTION] = desc
-            s_params[skills.SP_RESTRICTED] = restricted
-            s_params[skills.SP_SYNERGIES] = tuple(synergies)
-            skill_dict[sys_name] = skills.Skill(**s_params)
-        except:
-            pass
+                        d[dnd3.skills.SP_MIN_RANK] = int(d[dnd3.skills.SP_MIN_RANK])
+                        d[dnd3.skills.SP_TEST_BONUS] = int(d[dnd3.skills.SP_TEST_BONUS])
+                        synergies.append(dnd3.skills.Synergy(**d))
+            s_params[dnd3.skills.SP_SYSTEM_NAME] = sys_name
+            s_params[dnd3.skills.SP_NAME] = name
+            s_params[dnd3.skills.SP_DESCRIPTION] = desc
+            s_params[dnd3.skills.SP_RESTRICTED] = restricted
+            s_params[dnd3.skills.SP_SYNERGIES] = tuple(synergies)
+            skill_dict[sys_name] = dnd3.skills.Skill(**s_params)
+        except Exception as err:
+            print(err)
     return skill_dict
 
 

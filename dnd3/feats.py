@@ -1,5 +1,7 @@
 __author__ = 'bartek'
-from dnd3 import flags, controllers, models
+import dnd3.flags
+import dnd3.controllers
+import dnd3.models
 
 
 class Feat:
@@ -16,17 +18,17 @@ class Feat:
         """
         return self.sys_name
 
-    def is_available_for(self, controller: controllers.CreatureController) -> bool:
+    def is_available_for(self, controller: dnd3.controllers.CreatureController) -> bool:
         """ Sprawdza czy postać spełnia wymagania atutu
         :param controller: kontroler postaci
         :return: True jeśli spełnia wymagania, inaczej False
         """
         raise NotImplementedError()
 
-    def is_turned_on(self, controller: controllers.CreatureController) -> bool:
-        return self.sys_name in controller.model[models.P_FEATS]
+    def is_turned_on(self, controller: dnd3.controllers.CreatureController) -> bool:
+        return self.sys_name in controller.model[dnd3.models.P_FEATS]
 
-    def turn_on(self, controller: controllers.CreatureController, *args, **kwargs) -> bool:
+    def turn_on(self, controller: dnd3.controllers.CreatureController, *args, **kwargs) -> bool:
         """ Aktywuje atut dla danej postaci
         :param controller: kontroler postaci
         :param args: dodatkowe argumenty
@@ -35,7 +37,7 @@ class Feat:
         """
         raise NotImplementedError()
 
-    def turn_off(self, controller: controllers.CreatureController, *args, **kwargs) -> bool:
+    def turn_off(self, controller: dnd3.controllers.CreatureController, *args, **kwargs) -> bool:
         """ Dezaktywuje atut
         :param controller: kontroler postaci
         :param args: dodatkowe argumenty
@@ -53,10 +55,10 @@ class Feat:
     def is_passive(self) -> bool:
         return self.passive
 
-    def activate(self, controller: controllers.CreatureController) -> None:
+    def activate(self, controller: dnd3.controllers.CreatureController) -> None:
         pass
 
-    def deactivate(self, controller: controllers.CreatureController) -> None:
+    def deactivate(self, controller: dnd3.controllers.CreatureController) -> None:
         pass
 
 
@@ -86,7 +88,7 @@ class ExternFeat(Feat):
         self.description = description
 
     def get_flags(self) -> int:
-        return flags.F_ALLTIME
+        return dnd3.flags.F_ALLTIME
 
     def is_available_for(self, controller):
         return all(map(lambda x: x(controller), self.conditions))

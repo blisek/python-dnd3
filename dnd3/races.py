@@ -1,7 +1,8 @@
 __author__ = 'bartek'
 import dnd3.controllers
 import dnd3.models
-from dnd3 import flags, others
+import dnd3.flags
+import dnd3.others
 
 
 class RaceDescription:
@@ -55,29 +56,29 @@ class Human(Race):
 
     def turn_on(self, controller: dnd3.controllers.CreatureController, extra_return_arguments: dict):
         controller.model[dnd3.models.P_RACE] = self.sys_name
-        controller.model[dnd3.models.P_SIZE] = others.S_MEDIUM
+        controller.model[dnd3.models.P_SIZE] = dnd3.others.S_MEDIUM
         prev_speed = controller.model[dnd3.models.P_SPEED]
         controller.model[dnd3.models.P_SPEED] = prev_speed if prev_speed > 9 else 9
 
-        if flags.E_FEATS_NUM in extra_return_arguments:
-            extra_return_arguments[flags.E_FEATS_NUM] += 1
+        if dnd3.flags.E_FEATS_NUM in extra_return_arguments:
+            extra_return_arguments[dnd3.flags.E_FEATS_NUM] += 1
         else:
-            extra_return_arguments[flags.E_FEATS_NUM] = 1
+            extra_return_arguments[dnd3.flags.E_FEATS_NUM] = 1
 
-        if flags.E_SKILLS_NUM in extra_return_arguments:
-            extra_return_arguments[flags.E_SKILLS_NUM] += 4
+        if dnd3.flags.E_SKILLS_NUM in extra_return_arguments:
+            extra_return_arguments[dnd3.flags.E_SKILLS_NUM] += 4
         else:
-            extra_return_arguments[flags.E_SKILLS_NUM] = 4
+            extra_return_arguments[dnd3.flags.E_SKILLS_NUM] = 4
 
-        if flags.E_LANGUAGES in extra_return_arguments:
-            extra_return_arguments[flags.E_LANGUAGES].add(others.L_COMMON)
+        if dnd3.flags.E_LANGUAGES in extra_return_arguments:
+            extra_return_arguments[dnd3.flags.E_LANGUAGES].add(dnd3.others.L_COMMON)
         else:
-            extra_return_arguments[flags.E_LANGUAGES] = {others.L_COMMON}
+            extra_return_arguments[dnd3.flags.E_LANGUAGES] = {dnd3.others.L_COMMON}
 
-        if flags.E_LANGUAGES_NUM in extra_return_arguments:
-            extra_return_arguments[flags.E_LANGUAGES_NUM] += 1
+        if dnd3.flags.E_LANGUAGES_NUM in extra_return_arguments:
+            extra_return_arguments[dnd3.flags.E_LANGUAGES_NUM] += 1
         else:
-            extra_return_arguments[flags.E_LANGUAGES_NUM] = 1
+            extra_return_arguments[dnd3.flags.E_LANGUAGES_NUM] = 1
 
     def turn_off(self, controller: dnd3.controllers.CreatureController):
         controller.model[dnd3.models.P_RACE] = None
@@ -94,7 +95,7 @@ class Human(Race):
             return
 
         # na każdym poziomie człowiek otrzymuje dodatkowy punkt umiejętności
-        if flags.E_SKILLS_NUM in extra_return_arguments:
-            extra_return_arguments[flags.E_SKILLS_NUM] += diff  # *1
+        if dnd3.flags.E_SKILLS_NUM in extra_return_arguments:
+            extra_return_arguments[dnd3.flags.E_SKILLS_NUM] += diff  # *1
         else:
-            extra_return_arguments[flags.E_SKILLS_NUM] = diff
+            extra_return_arguments[dnd3.flags.E_SKILLS_NUM] = diff
