@@ -157,3 +157,5 @@ class Barbarian(Class):
             extra_return_arguments[flags.E_NEW_SPECA].extend(new_speca)
         else:
             extra_return_arguments[flags.E_NEW_SPECA] = new_speca
+
+        # TODO: dodać biegłości

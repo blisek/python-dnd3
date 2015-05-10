@@ -1,7 +1,7 @@
 __author__ = 'bartek'
 import dnd3.controllers
 import dnd3.models
-from dnd3 import flags
+from dnd3 import flags, others
 
 
 class RaceDescription:
@@ -53,9 +53,11 @@ class Human(Race):
     def description(self):
         return Human.DESCRIPTION
 
-    # TODO: osbługa rasy Człowiek - darmowy atut na 1. poziomie, darmowe punkty umiejętności
     def turn_on(self, controller: dnd3.controllers.CreatureController, extra_return_arguments: dict):
         controller.model[dnd3.models.P_RACE] = self.sys_name
+        controller.model[dnd3.models.P_SIZE] = others.S_MEDIUM
+        prev_speed = controller.model[dnd3.models.P_SPEED]
+        controller.model[dnd3.models.P_SPEED] = prev_speed if prev_speed > 9 else 9
 
         if flags.E_FEATS_NUM in extra_return_arguments:
             extra_return_arguments[flags.E_FEATS_NUM] += 1
@@ -66,3 +68,33 @@ class Human(Race):
             extra_return_arguments[flags.E_SKILLS_NUM] += 4
         else:
             extra_return_arguments[flags.E_SKILLS_NUM] = 4
+
+        if flags.E_LANGUAGES in extra_return_arguments:
+            extra_return_arguments[flags.E_LANGUAGES].add(others.L_COMMON)
+        else:
+            extra_return_arguments[flags.E_LANGUAGES] = {others.L_COMMON}
+
+        if flags.E_LANGUAGES_NUM in extra_return_arguments:
+            extra_return_arguments[flags.E_LANGUAGES_NUM] += 1
+        else:
+            extra_return_arguments[flags.E_LANGUAGES_NUM] = 1
+
+    def turn_off(self, controller: dnd3.controllers.CreatureController):
+        controller.model[dnd3.models.P_RACE] = None
+        controller.model[dnd3.models.P_SIZE] = None
+        controller.model[dnd3.models.P_SPEED] = 0
+
+    def increase_level(self, controller: dnd3.controllers.CreatureController,
+                       class_data_provider: dnd3.providers.ClassDataProvider,
+                       lvl: int, extra_return_arguments: dict):
+        level = controller.class_total_level(self.sys_name)
+
+        diff = lvl - level
+        if diff <= 0:
+            return
+
+        # na każdym poziomie człowiek otrzymuje dodatkowy punkt umiejętności
+        if flags.E_SKILLS_NUM in extra_return_arguments:
+            extra_return_arguments[flags.E_SKILLS_NUM] += diff  # *1
+        else:
+            extra_return_arguments[flags.E_SKILLS_NUM] = diff

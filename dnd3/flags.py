@@ -40,7 +40,9 @@ F_FIGHT = 2
 F_LIMITED_DURATION = 32768
 
 # E - keys in extra return arguments
-E_NEW_FEATS = 'new_feats'
-E_NEW_SPECA = 'new_speca'
-E_FEATS_NUM = 'feats_num'
-E_SKILLS_NUM = 'skills_num'
+E_NEW_FEATS = 'new_feats'  # zbiór
+E_NEW_SPECA = 'new_speca'  # zbiór
+E_FEATS_NUM = 'feats_num'  # liczba
+E_SKILLS_NUM = 'skills_num'  # liczba
+E_LANGUAGES = 'languages'  # zbiór
+E_LANGUAGES_NUM = 'languages_num'  # liczba

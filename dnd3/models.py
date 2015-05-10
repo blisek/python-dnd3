@@ -20,33 +20,8 @@ P_BASE_ATTACK = 'base_attack'
 P_ARMOR_CLASS = 'ac'
 P_HP = 'hp'
 P_RACE = 'race'
-
-
-class Creature:
-    def __init__(self, **kwargs):
-        self.name = kwargs[P_NAME] if P_NAME in kwargs else None
-        self.age = kwargs[P_AGE] if P_AGE in kwargs else None
-
-        # atrybuty
-        self.strength = kwargs[P_STR] if P_STR in kwargs else None
-        self.dexterity = kwargs[P_DEX] if P_DEX in kwargs else None
-        self.constitution = kwargs[P_CON] if P_CON in kwargs else None
-        self.intelligence = kwargs[P_INT] if P_INT in kwargs else None
-        self.wisdom = kwargs[P_WIS] if P_WIS in kwargs else None
-        self.charisma = kwargs[P_CHA] if P_CHA in kwargs else None
-
-        #klasy
-        # lista par (nazwa systemowa, poziom)
-        self.classes = kwargs[P_CLASSES] if P_CLASSES in kwargs else list()
-
-        #atuty
-        self.feats = kwargs[P_FEATS] if P_FEATS in kwargs else []
-
-        # umiejętności
-        self.skills = kwargs[P_SKILLS] if P_SKILLS in kwargs else dict()
-
-        # efekty różnych atutów, specjalnych zdolności
-        self.effects = set(kwargs[P_EFFECTS]) if P_EFFECTS in kwargs else set()
+P_SIZE = 'size'
+P_SPEED = 'speed'
 
 
 class CreatureModel(dict):
@@ -66,6 +41,8 @@ class CreatureModel(dict):
 
         #rasa
         self.__setitem__(P_RACE, kwargs[P_RACE] if P_RACE in kwargs else None)
+        self.__setitem__(P_SIZE, kwargs[P_SIZE] if P_SIZE in kwargs else None)
+        self.__setitem__(P_SPEED, kwargs[P_SPEED] if P_SPEED in kwargs else 0)
 
         # KP
         self.__setitem__(P_ARMOR_CLASS + '_base', 10)
