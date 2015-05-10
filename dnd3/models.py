@@ -19,6 +19,7 @@ P_WILL = 'will'
 P_BASE_ATTACK = 'base_attack'
 P_ARMOR_CLASS = 'ac'
 P_HP = 'hp'
+P_RACE = 'race'
 
 
 class Creature:
@@ -33,7 +34,6 @@ class Creature:
         self.intelligence = kwargs[P_INT] if P_INT in kwargs else None
         self.wisdom = kwargs[P_WIS] if P_WIS in kwargs else None
         self.charisma = kwargs[P_CHA] if P_CHA in kwargs else None
-
 
         #klasy
         # lista par (nazwa systemowa, poziom)
@@ -63,6 +63,9 @@ class CreatureModel(dict):
         self.__setitem__(P_INT, kwargs[P_INT] if P_INT in kwargs else 0)
         self.__setitem__(P_WIS, kwargs[P_WIS] if P_WIS in kwargs else 0)
         self.__setitem__(P_CHA, kwargs[P_CHA] if P_CHA in kwargs else 0)
+
+        #rasa
+        self.__setitem__(P_RACE, kwargs[P_RACE] if P_RACE in kwargs else None)
 
         # KP
         self.__setitem__(P_ARMOR_CLASS + '_base', 10)

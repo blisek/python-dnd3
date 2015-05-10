@@ -38,3 +38,9 @@ T_HOUR = 'hour'
 F_ALLTIME = 1
 F_FIGHT = 2
 F_LIMITED_DURATION = 32768
+
+# E - keys in extra return arguments
+E_NEW_FEATS = 'new_feats'
+E_NEW_SPECA = 'new_speca'
+E_FEATS_NUM = 'feats_num'
+E_SKILLS_NUM = 'skills_num'

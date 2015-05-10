@@ -13,12 +13,10 @@ class Class:
         self.alignments = alignments
 
     def assign(self, controller: dnd3.controllers.CreatureController,
-               class_data_provider: dnd3.providers.ClassDataProvider) -> None:
+               class_data_provider: dnd3.providers.ClassDataProvider,
+               extra_return_arguments: dict) -> None:
         """ Aktywuje klasę dla modelu.
         Oprócz tego model
-        :type model: dnd3.models.Creature
-        :param model:
-        :return: None
         """
         raise NotImplementedError()
 
@@ -33,7 +31,8 @@ class Class:
         return suma > 0, suma
 
     def increase_level(self, controller: dnd3.controllers.CreatureController,
-                       class_data_provider: dnd3.providers.ClassDataProvider, lvl: int) -> None:
+                       class_data_provider: dnd3.providers.ClassDataProvider,
+                       lvl: int, extra_return_arguments: dict) -> None:
         raise NotImplementedError()
 
     def is_handling_epic(self) -> bool:
@@ -58,6 +57,7 @@ class Class:
         """
         raise NotImplementedError()
 
+    # TODO: NIEPOTRZEBNE (przekazywanie za pomocą extra arguments)
     def skill_ranks_per_level(self) -> int:
         """ Zwraca liczbę ramg co poziom
         :return: liczba rang co poziom
@@ -137,7 +137,7 @@ class Barbarian(Class):
     def num_of_attacks(self, level):
         return math.ceil(level / 5)
 
-    def assign(self, controller, class_data_provider):
+    def assign(self, controller, class_data_provider, extra_return_arguments):
         """ Przypisuje klasę do modelu postaci oraz ustawia poziom w tej klasie na 1
         :type controller: dnd3.controllers.CreatureController
         :type class_data_provider: dnd3.providers.ClassDataProvider
@@ -152,5 +152,8 @@ class Barbarian(Class):
         model[self.reflex_name] = self.reflex_modifier(1)
         model[self.will_name] = self.will_modifier(1)
         model[self.base_attack_name] = self.base_attack_modifier(1)
-        special_abilities.Rage().turn_on(controller)
-        special_abilities.FastMovement().turn_on(controller)
+        new_speca = [special_abilities.Rage.SYSTEM_NAME, special_abilities.FastMovement.SYSTEM_NAME]
+        if flags.E_NEW_FEATS in extra_return_arguments:
+            extra_return_arguments[flags.E_NEW_SPECA].extend(new_speca)
+        else:
+            extra_return_arguments[flags.E_NEW_SPECA] = new_speca

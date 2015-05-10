@@ -74,8 +74,10 @@ class Rage(SpecialAbility):
 
     FLAGS = flags.F_ALLTIME | flags.F_FIGHT | flags.F_LIMITED_DURATION
 
+    SYSTEM_NAME = 'rage'
+
     def __init__(self):
-        super().__init__('rage', False)
+        super().__init__(Rage.SYSTEM_NAME, False)
         self.will_mod = "{0}_{1}".format(models.P_WILL, self.sys_name)
         self.ac_mod = "{0}_{1}".format(models.P_ARMOR_CLASS, self.sys_name)
 
@@ -143,8 +145,10 @@ class FastMovement(SpecialAbility):
         'szybkość wzrasta o +3 metry jeśli jest bez pancerza, w pancerzu lekkim lub średnim'
     )
 
+    SYSTEM_NAME = 'fast_movement'
+
     def __init__(self):
-        super().__init__(sys_name='fast_movement', passive=True)
+        super().__init__(sys_name=FastMovement.SYSTEM_NAME, passive=True)
 
     def get_flags(self) -> int:
         return flags.F_ALLTIME
